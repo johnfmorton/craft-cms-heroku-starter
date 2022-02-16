@@ -1,0 +1,30 @@
+dateModified: 1644957771
+email:
+  fromEmail: andrew@nystudio107.com
+  fromName: Craft
+  transportType: craft\mail\transportadapters\Sendmail
+meta:
+  __names__:
+    f9b27431-f7f8-495e-8e98-1179bbbfab2b: 'Public Schema' # Public Schema
+plugins:
+  minify:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  vite:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+system:
+  edition: pro
+  live: true
+  name: Project
+  retryDuration: 60
+  schemaVersion: 3.7.33
+  timeZone: America/New_York
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: ''
+  photoVolumeUid: null
+  requireEmailVerification: true
