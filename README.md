@@ -24,7 +24,6 @@ REDIS_URL=redis://:@redis:6379
 
 There is not password. The host is `redis`, which is how it is referenced insideo the Docker network of containers, i.e. it's not `localhost` in our local development environment.
 
-
 ## Heroku resources and buildpacks
 
 ### There are 2 buildpacks expected with this repo.
@@ -35,6 +34,16 @@ You must manually add these buildpacks.
 2. Heroku Redis
 
 ![heroku-resources.png](heroku-resources.png)
+
+In the screenshot above, notice that this is the "Hobby Dev" version of Heroku Redis. This version does not require an SSL connection. After updating the app to be paid level, it will require an SSL connection. See [Con­fig­ur­ing Craft CMS with Redis for use on Heroku](https://supergeekery.com/blog/heroku-redis-sll-configuration) for details.
+
+### Setting up the worker
+
+In the Profile, there is a worker defined.
+
+![heroku-paid-tier.png](heroku-paid-tier.png)
+
+In the screenshot above notice that the *workeer* is an additional dyno that needs to be upgraded. This worker will run the queue for the site and this is why the env variable, `RUN_QUEUE_AUTOMATICALLY`, is set to false.
 
 ### There are 4 buildpacks that need to be in the following order.
 
