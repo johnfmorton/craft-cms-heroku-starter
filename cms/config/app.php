@@ -19,15 +19,13 @@
 use craft\helpers\App;
 
 $redisUrl = App::env('REDIS_URL');
+//print_r(App::env('REDIS_URL'));
+//print_r(App::env('REDIS_USE_SSL'));
+//die();
 
 if (!$redisUrl) {
-  exit('The redis database is not reachable as configured.');
+    exit('app.php: The redis database is not reachable as configured:' . App::env('REDIS_URL'));
 }
-
-$redissParts = parse_url($redisUrl);
-
-// print_r($redissParts);
-// die();
 
 $redisSettings =  [
     'id' => App::env('APP_ID') ?: 'CraftCMS',
@@ -40,12 +38,20 @@ $redisSettings =  [
     'components' => [
         'cache' => [
             'class' => yii\redis\Cache::class,
+            'defaultDuration' => 86400,
             'keyPrefix' => App::env('APP_ID') ?: 'CraftCMS',
             'redis' => [
-                'hostname' => $redissParts['host'],
-                'port' => $redissParts['port'],
-                'database' => App::env('REDIS_CRAFT_DB'),
-                // 'password' => $redissParts['pass'],
+                'hostname' => parse_url(App::env('REDIS_URL'), PHP_URL_HOST),
+                'port' => parse_url(App::env('REDIS_URL'), PHP_URL_PORT),
+                'database' => App::env('REDIS_USE_SSL') ? App::env('REDIS_CRAFT_DB') : null,
+                'password' => App::env('REDIS_USE_SSL') ? parse_url(App::env('REDIS_URL'), PHP_URL_PASS) : null,
+                'useSSL' => App::env('REDIS_USE_SSL'),
+                'contextOptions' => [
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    ],
+                ],
             ],
         ],
         'deprecator' => [
@@ -57,18 +63,20 @@ $redisSettings =  [
         ],
         'redis' => [
             'class' => yii\redis\Connection::class,
-            'hostname' => $redissParts['host'],
-            'port' => $redissParts['port'],
-            'database' => App::env('REDIS_DEFAULT_DB'),
-            // 'password' => $redissParts['pass'],
+            'hostname' => parse_url(App::env('REDIS_URL'), PHP_URL_HOST),
+            'port' => parse_url(App::env('REDIS_URL'), PHP_URL_PORT),
+            'database' => App::env('REDIS_USE_SSL') ? App::env('REDIS_CRAFT_DB') : null,
+            'user' => App::env('REDIS_USE_SSL') ? parse_url(App::env('REDIS_URL'), PHP_URL_USER) : null,
+            'password' => App::env('REDIS_USE_SSL') ? parse_url(App::env('REDIS_URL'), PHP_URL_PASS) : null,
+            'useSSL' => App::env('REDIS_USE_SSL'),
+            'contextOptions' => [
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false
+                ],
+            ],
         ],
     ],
 ];
-
-// Add password to config if it is set
-if (isset($redissParts['pass']) && $redissParts['pass'] !== '') {
-    $redisSettings['components']['cache']['redis']['password'] = $redissParts['pass'];
-    $redisSettings['components']['redis']['password'] = $redissParts['pass'];
-}
 
 return $redisSettings;
