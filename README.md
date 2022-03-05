@@ -43,7 +43,7 @@ In the Profile, there is a worker defined.
 
 ![heroku-paid-tier.png](heroku-paid-tier.png)
 
-In the screenshot above notice that the *workeer* is an additional dyno that needs to be upgraded. This worker will run the queue for the site and this is why the env variable, `RUN_QUEUE_AUTOMATICALLY`, is set to false.
+In the screenshot above notice that the *worker* is an additional dyno that needs to be upgraded. This worker will run the queue for the site and this is why the env variable, `RUN_QUEUE_AUTOMATICALLY`, is set to false.
 
 ### There are 4 buildpacks that need to be in the following order.
 
